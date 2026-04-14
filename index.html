@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Recepción Taller · Mora Motors</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --accent: #e8c84a;
+    --accent2: #c0392b;
+    --text: #e8e4dc;
+    --muted: #777;
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Oswald', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--surface);
+    border-bottom: 3px solid var(--accent);
+    padding: 16px 20px 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .brand {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .brand-top {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: 3px;
+  }
+  .brand-sub {
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .skull {
+    font-size: 30px;
+    filter: grayscale(1) brightness(0.8);
+  }
+
+  /* ── STEPS NAV ── */
+  .steps-nav {
+    display: flex;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .steps-nav::-webkit-scrollbar { display: none; }
+  .step-btn {
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: none;
+    background: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .step-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .step-btn.done {
+    color: #4caf50;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    display: none;
+    padding: 20px 16px;
+    animation: fadeIn .25s ease;
+  }
+  .section.visible { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    margin-bottom: 18px;
+    border-left: 4px solid var(--accent2);
+    padding-left: 10px;
+  }
+
+  /* ── FIELDS ── */
+  .field-group {
+    margin-bottom: 16px;
+  }
+  label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .field-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  input[type="text"],
+  input[type="date"],
+  input[type="time"],
+  input[type="number"],
+  textarea,
+  select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color .2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--accent);
+  }
+  textarea { resize: vertical; min-height: 70px; }
+
+  /* voice btn */
+  .mic-btn {
+    flex-shrink: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--muted);
+    font-size: 18px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all .2s;
+    line-height: 1;
+  }
+  .mic-btn.listening {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: #fff;
+    animation: pulse .7s infinite alternate;
+  }
+  @keyframes pulse {
+    from { box-shadow: 0 0 0 0 rgba(192,57,43,.5); }
+    to   { box-shadow: 0 0 0 8px rgba(192,57,43,0); }
+  }
+
+  /* grid 2 cols */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ── DAMAGE DIAGRAM ── */
+  .moto-diagram {
+    position: relative;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+    height: 180px;
+  }
+  .moto-svg {
+    width: 100%;
+    height: 100%;
+    opacity: .3;
+    user-select: none;
+    pointer-events: none;
+  }
+  .damage-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+    touch-action: none;
+  }
+  .damage-tools {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .dmg-tool {
+    padding: 6px 12px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--muted);
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .dmg-tool.selected { background: var(--accent); color: #000; border-color: var(--accent); }
+  .dmg-clear {
+    margin-left: auto;
+    padding: 6px 12px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    border: 1px solid var(--accent2);
+    background: transparent;
+    color: var(--accent2);
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+
+  /* ── CHECKBOXES ── */
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+  .check-item:active { border-color: var(--accent); }
+  .check-item input[type="checkbox"] { display: none; }
+  .check-box {
+    width: 20px; height: 20px;
+    border: 2px solid var(--muted);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .15s;
+    font-size: 13px;
+  }
+  .check-item.checked .check-box {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+  .check-label { font-size: 13px; letter-spacing: .5px; flex: 1; }
+  .check-detail {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    width: 90px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    padding: 4px 8px;
+    outline: none;
+    flex-shrink: 0;
+  }
+
+  /* ── FUEL GAUGE ── */
+  .fuel-gauge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .fuel-label { font-size: 11px; letter-spacing: 2px; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; }
+  .fuel-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    background: linear-gradient(to right, var(--accent2), var(--accent));
+    height: 8px;
+    border-radius: 4px;
+    outline: none;
+  }
+  .fuel-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 3px solid #000;
+  }
+  .fuel-marks {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .fuel-reading {
+    margin-top: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+
+  /* ── RADIO GROUP ── */
+  .radio-group { display: flex; gap: 10px; }
+  .radio-opt {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 1px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    background: var(--surface2);
+    color: var(--muted);
+    transition: all .15s;
+    text-transform: uppercase;
+  }
+  .radio-opt.selected {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ── SIGNATURE PAD ── */
+  .sig-container {
+    background: #fff;
+    border-radius: var(--radius);
+    border: 2px solid var(--border);
+    overflow: hidden;
+    position: relative;
+  }
+  .sig-canvas {
+    display: block;
+    width: 100%;
+    height: 130px;
+    touch-action: none;
+    cursor: crosshair;
+  }
+  .sig-placeholder {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    color: #ccc;
+    font-size: 13px;
+    pointer-events: none;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .sig-clear {
+    width: 100%;
+    padding: 8px;
+    background: #f5f5f5;
+    border: none;
+    border-top: 1px solid #ddd;
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: #888;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+
+  /* ── BUDGET ── */
+  .budget-row {
+    display: flex;
+    align-items: center;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0 14px;
+    overflow: hidden;
+  }
+  .currency {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--accent);
+    padding-right: 8px;
+  }
+  .budget-row input {
+    border: none;
+    background: none;
+    font-size: 22px;
+    flex: 1;
+    padding: 10px 0;
+  }
+
+  /* ── LEGAL NOTICE ── */
+  .legal {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  /* ── BUTTONS ── */
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .btn {
+    flex: 1;
+    padding: 14px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 3px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: all .2s;
+    text-transform: uppercase;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+  .btn-primary:active { background: #c9a83a; }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  /* ── ORDER PREVIEW ── */
+  .preview-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .preview-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .preview-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .preview-row:last-child { border: none; }
+  .preview-val {
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--accent);
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 2px;
+    padding: 12px 24px;
+    border-radius: 30px;
+    transition: transform .3s ease;
+    z-index: 999;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 18px 0;
+  }
+
+  .order-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 6px 12px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="brand-top">Mora Motors</span>
+    <span class="brand-sub">Calavera Garage · Taller</span>
+  </div>
+  <span class="skull">💀</span>
+</header>
+
+<nav class="steps-nav" id="stepsNav">
+  <button class="step-btn active" onclick="goTo(0)" id="s0">1 · Cliente</button>
+  <button class="step-btn" onclick="goTo(1)" id="s1">2 · Visual</button>
+  <button class="step-btn" onclick="goTo(2)" id="s2">3 · Tablero</button>
+  <button class="step-btn" onclick="goTo(3)" id="s3">4 · Accesorios</button>
+  <button class="step-btn" onclick="goTo(4)" id="s4">5 · Diagnóstico</button>
+  <button class="step-btn" onclick="goTo(5)" id="s5">6 · Firma</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 1: DATOS DEL CLIENTE                -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section visible" id="sec0">
+  <div class="section-title">Datos del Cliente & Vehículo</div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <span class="order-num" id="ordenDisplay">Orden: —</span>
+    <button class="btn btn-secondary" style="flex:0;padding:8px 14px;font-size:12px;" onclick="generarOrden()">Generar #</button>
+  </div>
+
+  <div class="grid-2">
+    <div class="field-group">
+      <label>Fecha</label>
+      <input type="date" id="fecha">
+    </div>
+    <div class="field-group">
+      <label>Hora</label>
+      <input type="time" id="hora">
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>Nombre del Cliente</label>
+    <div class="field-row">
+      <input type="text" id="cliente" placeholder="Nombre completo">
+      <button class="mic-btn" onclick="escuchar('cliente', this)">🎙️</button>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>Teléfono</label>
+    <div class="field-row">
+      <input type="text" id="telefono" placeholder="10 dígitos" inputmode="tel">
+      <button class="mic-btn" onclick="escuchar('telefono', this)">🎙️</button>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="grid-2">
+    <div class="field-group">
+      <label>Marca</label>
+      <div class="field-row">
+        <input type="text" id="marca" placeholder="Ej. Honda">
+        <button class="mic-btn" onclick="escuchar('marca', this)">🎙️</button>
+      </div>
+    </div>
+    <div class="field-group">
+      <label>Modelo</label>
+      <div class="field-row">
+        <input type="text" id="modelo" placeholder="Ej. CB 150">
+        <button class="mic-btn" onclick="escuchar('modelo', this)">🎙️</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="field-group">
+      <label>Color</label>
+      <input type="text" id="color" placeholder="Rojo / Negro…">
+    </div>
+    <div class="field-group">
+      <label>Año</label>
+      <input type="number" id="anio" placeholder="2022" inputmode="numeric">
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>Placa</label>
+    <div class="field-row">
+      <input type="text" id="placa" placeholder="ABC-1234" style="text-transform:uppercase;">
+      <button class="mic-btn" onclick="escuchar('placa', this)">🎙️</button>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>NIV / Número de Serie *</label>
+    <div class="field-row">
+      <input type="text" id="niv" placeholder="Obligatorio" style="text-transform:uppercase;">
+      <button class="mic-btn" onclick="escuchar('niv', this)">🎙️</button>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>Estatus Legal REPUVE</label>
+    <div class="radio-group">
+      <div class="radio-opt selected" id="repuve_ok" onclick="setRadio('repuve','ok')">Sin Reporte</div>
+      <div class="radio-opt" id="repuve_rep" onclick="setRadio('repuve','rep')">Reportado</div>
+      <div class="radio-opt" id="repuve_pend" onclick="setRadio('repuve','pend')">Pendiente</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="goTo(1)">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 2: INSPECCIÓN VISUAL                -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="sec1">
+  <div class="section-title">Inspección Visual</div>
+
+  <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Marca daños directamente sobre el diagrama. Selecciona el tipo primero.</p>
+
+  <div class="damage-tools">
+    <button class="dmg-tool selected" id="dt_r" onclick="setDmgTool('R')">R · Rayón</button>
+    <button class="dmg-tool" id="dt_g" onclick="setDmgTool('G')">G · Golpe</button>
+    <button class="dmg-tool" id="dt_f" onclick="setDmgTool('F')">F · Fuga</button>
+    <button class="dmg-tool" id="dt_p" onclick="setDmgTool('P')">P · Pieza</button>
+    <button class="dmg-clear" onclick="clearDamage()">✕ Limpiar</button>
+  </div>
+
+  <div class="moto-diagram" id="motoDiagram">
+    <!-- SVG side silhouette (simple) -->
+    <svg class="moto-svg" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#e8c84a" stroke-width="1.5">
+      <!-- wheels -->
+      <circle cx="75" cy="140" r="32"/>
+      <circle cx="75" cy="140" r="20"/>
+      <circle cx="325" cy="140" r="32"/>
+      <circle cx="325" cy="140" r="20"/>
+      <!-- frame -->
+      <path d="M75 110 L120 60 L180 55 L240 60 L290 80 L325 110"/>
+      <line x1="120" y1="60" x2="115" y2="110"/>
+      <line x1="180" y1="55" x2="185" y2="110"/>
+      <!-- seat -->
+      <path d="M185 55 Q220 45 265 55 L265 70 Q220 60 185 65 Z"/>
+      <!-- tank -->
+      <ellipse cx="165" cy="62" rx="35" ry="15"/>
+      <!-- handlebar -->
+      <line x1="120" y1="60" x2="105" y2="42"/>
+      <line x1="95" y1="42" x2="115" y2="42"/>
+      <!-- fork -->
+      <line x1="110" y1="48" x2="90" y2="108"/>
+      <line x1="120" y1="48" x2="100" y2="108"/>
+      <!-- engine -->
+      <rect x="135" y="80" width="60" height="40" rx="4"/>
+      <!-- exhaust -->
+      <path d="M195 110 Q240 115 300 130 Q310 133 320 130"/>
+      <!-- rear susp -->
+      <line x1="260" y1="60" x2="300" y2="110"/>
+      <line x1="270" y1="65" x2="305" y2="108"/>
+      <!-- headlight -->
+      <ellipse cx="88" cy="58" rx="14" ry="10"/>
+    </svg>
+    <canvas class="damage-canvas" id="damageCanvas"></canvas>
+  </div>
+
+  <div class="field-group">
+    <label>Notas de daños adicionales</label>
+    <div class="field-row">
+      <textarea id="danoNota" placeholder="Describe daños que no se aprecian en el diagrama…"></textarea>
+      <button class="mic-btn" onclick="escuchar('danoNota', this)" style="align-self:flex-start;">🎙️</button>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <label style="margin-bottom:8px;display:block;">Estado de Componentes</label>
+
+  <div id="checkEspejos" class="check-item" onclick="toggleCheck(this)">
+    <input type="checkbox"><div class="check-box">✓</div>
+    <span class="check-label">Espejos</span>
+    <select class="check-detail" onclick="e=>e.stopPropagation()" id="estEspejos">
+      <option>OK</option><option>Dañados</option>
+    </select>
+  </div>
+  <div id="checkManijas" class="check-item" onclick="toggleCheck(this)">
+    <input type="checkbox"><div class="check-box">✓</div>
+    <span class="check-label">Manijas</span>
+    <select class="check-detail" onclick="e=>e.stopPropagation()" id="estManijas">
+      <option>OK</option><option>Dobladas</option>
+    </select>
+  </div>
+  <div id="checkAsiento" class="check-item" onclick="toggleCheck(this)">
+    <input type="checkbox"><div class="check-box">✓</div>
+    <span class="check-label">Asiento</span>
+    <select class="check-detail" onclick="e=>e.stopPropagation()" id="estAsiento">
+      <option>OK</option><option>Roto</option>
+    </select>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(0)">← Atrás</button>
+    <button class="btn btn-primary" onclick="goTo(2)">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 3: TABLERO Y NIVELES                -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="sec2">
+  <div class="section-title">Tablero y Niveles</div>
+
+  <div class="field-group">
+    <label>Kilometraje</label>
+    <div class="field-row">
+      <input type="number" id="km" placeholder="00000 km" inputmode="numeric">
+      <button class="mic-btn" onclick="escuchar('km', this)">🎙️</button>
+    </div>
+  </div>
+
+  <div class="fuel-gauge">
+    <div class="fuel-label">⛽ Nivel de Gasolina</div>
+    <input type="range" class="fuel-slider" id="gasolinaSlider" min="0" max="100" value="50" oninput="updateFuel(this.value)">
+    <div class="fuel-marks">
+      <span>E (Vacío)</span>
+      <span>1/4</span>
+      <span>1/2</span>
+      <span>3/4</span>
+      <span>F (Lleno)</span>
+    </div>
+    <div class="fuel-reading" id="fuelReading">½ Tanque</div>
+  </div>
+
+  <div class="field-group">
+    <label>Tablero</label>
+    <div class="radio-group">
+      <div class="radio-opt selected" id="tab_si" onclick="setRadio('tablero','si')">Funciona</div>
+      <div class="radio-opt" id="tab_no" onclick="setRadio('tablero','no')">No Funciona</div>
+    </div>
+  </div>
+
+  <div class="field-group" id="tableroFallaGroup" style="display:none;">
+    <label>Describe la falla</label>
+    <div class="field-row">
+      <input type="text" id="tableroFalla" placeholder="Ej. Velocímetro no marca">
+      <button class="mic-btn" onclick="escuchar('tableroFalla', this)">🎙️</button>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(1)">← Atrás</button>
+    <button class="btn btn-primary" onclick="goTo(3)">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 4: ACCESORIOS                       -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="sec3">
+  <div class="section-title">Inventario de Accesorios</div>
+
+  <div id="checkCasco" class="check-item" onclick="toggleCheck(this)">
+    <input type="checkbox"><div class="check-box">✓</div>
+    <span class="check-label">Casco</span>
+    <select class="check-detail" onclick="e=>e.stopPropagation()" id="estCasco">
+      <option>Sí</option><option>No</option>
+    </select>
+  </div>
+  <div id="checkHerr" class="check-item" onclick="toggleCheck(this)">
+    <input type="checkbox"><div class="check-box">✓</div>
+    <span class="check-label">Herramientas</span>
+    <select class="check-detail" onclick="e=>e.stopPropagation()" id="estHerr">
+      <option>Sí</option><option>No</option>
+    </select>
+  </div>
+
+  <div class="field-group" style="margin-top:10px;">
+    <label>Otros accesorios</label>
+    <div class="field-row">
+      <textarea id="otrosAcc" placeholder="Canastilla, candado, GPS…"></textarea>
+      <button class="mic-btn" onclick="escuchar('otrosAcc', this)" style="align-self:flex-start;">🎙️</button>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(2)">← Atrás</button>
+    <button class="btn btn-primary" onclick="goTo(4)">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 5: DIAGNÓSTICO                      -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="sec4">
+  <div class="section-title">Diagnóstico Inicial</div>
+
+  <div class="field-group">
+    <label>Diagnóstico del Técnico</label>
+    <div class="field-row">
+      <textarea id="diagnostico" placeholder="Describe el problema reportado por el cliente y la evaluación inicial…" style="min-height:100px;"></textarea>
+      <button class="mic-btn" onclick="escuchar('diagnostico', this)" style="align-self:flex-start;">🎙️</button>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>Presupuesto Estimado</label>
+    <div class="budget-row">
+      <span class="currency">$</span>
+      <input type="number" id="presupuesto" placeholder="0.00" inputmode="decimal" style="font-size:22px;">
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>Promesa de Entrega</label>
+    <input type="date" id="entrega">
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(3)">← Atrás</button>
+    <button class="btn btn-primary" onclick="goTo(5)">Firmar →</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 6: FIRMAS                           -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="sec5">
+  <div class="section-title">Conformidad y Firmas</div>
+
+  <div class="legal">
+    El cliente manifiesta bajo protesta de decir verdad que la unidad es de su propiedad o está autorizada, deslindando al taller de responsabilidad sobre su procedencia.
+  </div>
+
+  <div class="field-group">
+    <label>Firma del Cliente (propietario)</label>
+    <div class="sig-container">
+      <canvas class="sig-canvas" id="sigCliente"></canvas>
+      <div class="sig-placeholder" id="phCliente">Firma aquí</div>
+      <button class="sig-clear" onclick="clearSig('sigCliente','phCliente')">✕ Limpiar firma</button>
+    </div>
+  </div>
+
+  <div class="field-group" style="margin-top:16px;">
+    <label>Recibido por el Taller</label>
+    <div class="field-row">
+      <input type="text" id="tecnico" placeholder="Nombre del técnico">
+      <button class="mic-btn" onclick="escuchar('tecnico', this)">🎙️</button>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>Firma del Taller</label>
+    <div class="sig-container">
+      <canvas class="sig-canvas" id="sigTaller"></canvas>
+      <div class="sig-placeholder" id="phTaller">Firma aquí</div>
+      <button class="sig-clear" onclick="clearSig('sigTaller','phTaller')">✕ Limpiar firma</button>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(4)">← Atrás</button>
+    <button class="btn btn-primary" onclick="verResumen()">Ver Resumen 📋</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 7: RESUMEN / PREVIEW                -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="sec6">
+  <div class="section-title">Resumen de Orden</div>
+  <div id="resumenContent"></div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(5)">← Editar</button>
+    <button class="btn btn-primary" onclick="guardarOrden()">💾 Guardar Orden</button>
+  </div>
+</section>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ──
+let currentSection = 0;
+let damagePoints = [];
+let currentDmgTool = 'R';
+let radios = { repuve: 'ok', tablero: 'si' };
+const fuelLabels = ['Vacío (E)','1/4','1/4–1/2','1/2','1/2–3/4','3/4','3/4–Lleno','Lleno (F)'];
+
+// ── NAVIGATION ──
+function goTo(n) {
+  document.getElementById('sec' + currentSection).classList.remove('visible');
+  document.getElementById('s' + currentSection).classList.remove('active');
+  currentSection = n;
+  document.getElementById('sec' + n).classList.add('visible');
+  document.getElementById('s' + n).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (n === 1) { setTimeout(initCanvas, 100); }
+  if (n === 5) { setTimeout(()=>{ initSig('sigCliente'); initSig('sigTaller'); }, 100); }
+}
+
+// ── ORDER NUMBER ──
+function generarOrden() {
+  const d = new Date();
+  const num = 'MM-' + d.getFullYear().toString().slice(2) +
+    String(d.getMonth()+1).padStart(2,'0') +
+    String(d.getDate()).padStart(2,'0') + '-' +
+    String(Math.floor(Math.random()*900)+100);
+  document.getElementById('ordenDisplay').textContent = 'Orden: ' + num;
+  document.getElementById('ordenDisplay').dataset.value = num;
+  // set today
+  const f = d.toISOString().split('T')[0];
+  document.getElementById('fecha').value = f;
+  document.getElementById('hora').value = d.toTimeString().slice(0,5);
+}
+
+// ── RADIO ──
+function setRadio(group, val) {
+  radios[group] = val;
+  if (group === 'repuve') {
+    ['ok','rep','pend'].forEach(v => {
+      document.getElementById('repuve_' + v).classList.toggle('selected', v === val);
+    });
+  }
+  if (group === 'tablero') {
+    ['si','no'].forEach(v => {
+      document.getElementById('tab_' + v).classList.toggle('selected', v === val);
+    });
+    document.getElementById('tableroFallaGroup').style.display = val === 'no' ? 'block' : 'none';
+  }
+}
+
+// ── CHECKBOXES ──
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+}
+
+// ── FUEL ──
+function updateFuel(v) {
+  v = parseInt(v);
+  let label;
+  if (v <= 5) label = 'Vacío (E)';
+  else if (v <= 20) label = '¼ de Tanque';
+  else if (v <= 40) label = '¼ – ½ Tanque';
+  else if (v <= 55) label = '½ Tanque';
+  else if (v <= 70) label = '½ – ¾ Tanque';
+  else if (v <= 85) label = '¾ de Tanque';
+  else if (v < 100) label = 'Casi Lleno';
+  else label = 'Lleno (F)';
+  document.getElementById('fuelReading').textContent = label;
+}
+
+// ── DAMAGE CANVAS ──
+function initCanvas() {
+  const canvas = document.getElementById('damageCanvas');
+  const diagram = document.getElementById('motoDiagram');
+  canvas.width = diagram.clientWidth;
+  canvas.height = diagram.clientHeight;
+  redrawDamage();
+
+  canvas.addEventListener('pointerdown', onDmgDown);
+}
+
+function setDmgTool(t) {
+  currentDmgTool = t;
+  ['R','G','F','P'].forEach(x => {
+    document.getElementById('dt_'+x.toLowerCase()).classList.toggle('selected', x === t);
+  });
+}
+
+function onDmgDown(e) {
+  e.preventDefault();
+  const canvas = document.getElementById('damageCanvas');
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+  const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+  damagePoints.push({ x, y, t: currentDmgTool });
+  redrawDamage();
+}
+
+function redrawDamage() {
+  const canvas = document.getElementById('damageCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const colors = { R: '#e8c84a', G: '#e74c3c', F: '#3498db', P: '#2ecc71' };
+  damagePoints.forEach(p => {
+    ctx.fillStyle = colors[p.t] || '#fff';
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 10px Oswald';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(p.t, p.x, p.y);
+  });
+}
+
+function clearDamage() {
+  damagePoints = [];
+  const canvas = document.getElementById('damageCanvas');
+  if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// ── SIGNATURE PADS ──
+const sigState = {};
+
+function initSig(id) {
+  const canvas = document.getElementById(id);
+  if (!canvas || sigState[id]) return;
+  canvas.width = canvas.offsetWidth;
+  canvas.height = 130;
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#1a1a2e';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  sigState[id] = { drawing: false, hasData: false };
+
+  canvas.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    sigState[id].drawing = true;
+    const r = canvas.getBoundingClientRect();
+    ctx.beginPath();
+    ctx.moveTo((e.clientX - r.left) * (canvas.width/r.width),
+               (e.clientY - r.top) * (canvas.height/r.height));
+    sigState[id].hasData = true;
+    document.getElementById('ph' + id.replace('sig','')).style.display = 'none';
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (!sigState[id].drawing) return;
+    e.preventDefault();
+    const r = canvas.getBoundingClientRect();
+    ctx.lineTo((e.clientX - r.left) * (canvas.width/r.width),
+               (e.clientY - r.top) * (canvas.height/r.height));
+    ctx.stroke();
+  });
+  ['pointerup','pointerleave'].forEach(ev =>
+    canvas.addEventListener(ev, () => { sigState[id].drawing = false; })
+  );
+}
+
+function clearSig(canvasId, placeholderId) {
+  const canvas = document.getElementById(canvasId);
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  if (sigState[canvasId]) sigState[canvasId].hasData = false;
+  document.getElementById(placeholderId).style.display = '';
+}
+
+// ── VOICE ──
+function escuchar(fieldId, btn) {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast('Voz no soportada en este navegador');
+    return;
+  }
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const rec = new SpeechRec();
+  rec.lang = 'es-MX';
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+
+  btn.classList.add('listening');
+  rec.start();
+
+  rec.onresult = e => {
+    const transcript = e.results[0][0].transcript;
+    const field = document.getElementById(fieldId);
+    if (field.tagName === 'TEXTAREA') {
+      field.value += (field.value ? ' ' : '') + transcript;
+    } else {
+      field.value = transcript;
+    }
+    btn.classList.remove('listening');
+    showToast('✓ Dictado guardado');
+  };
+  rec.onerror = () => {
+    btn.classList.remove('listening');
+    showToast('Error al escuchar, intenta de nuevo');
+  };
+  rec.onend = () => { btn.classList.remove('listening'); };
+}
+
+// ── RESUMEN ──
+function verResumen() {
+  goTo(6);
+  const orden = document.getElementById('ordenDisplay').dataset.value || '(sin número)';
+  const fuelVal = document.getElementById('gasolinaSlider').value;
+  const fuelTxt = document.getElementById('fuelReading').textContent;
+
+  const rows = [
+    ['Orden', orden],
+    ['Fecha', document.getElementById('fecha').value || '—'],
+    ['Hora', document.getElementById('hora').value || '—'],
+    ['Cliente', document.getElementById('cliente').value || '—'],
+    ['Teléfono', document.getElementById('telefono').value || '—'],
+    ['Marca / Modelo', `${document.getElementById('marca').value || '—'} / ${document.getElementById('modelo').value || '—'}`],
+    ['Color / Año', `${document.getElementById('color').value || '—'} / ${document.getElementById('anio').value || '—'}`],
+    ['Placa', document.getElementById('placa').value || '—'],
+    ['NIV/Serie', document.getElementById('niv').value || '—'],
+    ['Estatus REPUVE', {'ok':'Sin Reporte','rep':'Reportado','pend':'Pendiente'}[radios.repuve]],
+    ['Kilometraje', document.getElementById('km').value ? document.getElementById('km').value + ' km' : '—'],
+    ['Gasolina', fuelTxt],
+    ['Tablero', radios.tablero === 'si' ? 'Funciona' : 'Falla: ' + (document.getElementById('tableroFalla').value || '—')],
+    ['Presupuesto', document.getElementById('presupuesto').value ? '$' + document.getElementById('presupuesto').value : '—'],
+    ['Entrega', document.getElementById('entrega').value || '—'],
+    ['Diagnóstico', document.getElementById('diagnostico').value || '—'],
+    ['Técnico', document.getElementById('tecnico').value || '—'],
+  ];
+
+  let html = '<div class="preview-card"><div class="preview-title">📋 Datos de la Orden</div>';
+  rows.forEach(([k,v]) => {
+    html += `<div class="preview-row"><span>${k}</span><span class="preview-val">${v}</span></div>`;
+  });
+  html += '</div>';
+
+  // Damage summary
+  if (damagePoints.length > 0) {
+    const legend = { R: 'Rayón', G: 'Golpe', F: 'Fuga', P: 'Pieza faltante' };
+    const counts = {};
+    damagePoints.forEach(p => counts[p.t] = (counts[p.t]||0)+1);
+    html += '<div class="preview-card"><div class="preview-title">⚠️ Daños Marcados</div>';
+    Object.entries(counts).forEach(([t,c]) => {
+      html += `<div class="preview-row"><span>${legend[t]||t}</span><span class="preview-val">${c} marca(s)</span></div>`;
+    });
+    html += '</div>';
+  }
+
+  // Sigs preview
+  html += '<div class="preview-card"><div class="preview-title">✍️ Firmas</div>';
+  html += `<div class="preview-row"><span>Cliente</span><span class="preview-val">${sigState['sigCliente']?.hasData ? '✓ Firmado' : '✗ Pendiente'}</span></div>`;
+  html += `<div class="preview-row"><span>Taller</span><span class="preview-val">${sigState['sigTaller']?.hasData ? '✓ Firmado' : '✗ Pendiente'}</span></div>`;
+  html += '</div>';
+
+  document.getElementById('resumenContent').innerHTML = html;
+}
+
+// ── GUARDAR ──
+function guardarOrden() {
+  showToast('✓ Orden guardada correctamente');
+  setTimeout(() => {
+    if (confirm('¿Deseas comenzar una nueva orden?')) {
+      location.reload();
+    }
+  }, 1500);
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── INIT ──
+generarOrden();
+</script>
+</body>
+</html>
