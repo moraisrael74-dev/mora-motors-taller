@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Recepción Taller · Mora Motors</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0d0d0d; --surface:#161616; --surface2:#1e1e1e;
+    --border:#2a2a2a; --accent:#e8c84a; --accent2:#c0392b;
+    --text:#e8e4dc; --muted:#777; --radius:6px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{background:var(--bg);color:var(--text);font-family:'Oswald',sans-serif;font-weight:300;min-height:100vh;padding-bottom:60px;}
+
+  /* HEADER */
+  header{background:var(--surface);border-bottom:3px solid var(--accent);padding:14px 18px 10px;position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;}
+  .brand-top{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--accent);letter-spacing:3px;}
+  .brand-sub{font-size:9px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;}
+  .header-right{display:flex;align-items:center;gap:10px;}
+  .btn-hist{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--muted);font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;padding:7px 12px;cursor:pointer;text-transform:uppercase;}
+
+  /* STEPS */
+  .steps-nav{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+  .steps-nav::-webkit-scrollbar{display:none;}
+  .step-btn{flex:0 0 auto;padding:9px 13px;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border:none;background:none;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;transition:all .2s;}
+  .step-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .step-btn.done{color:#4caf50;}
+
+  /* SECTIONS */
+  .section{display:none;padding:18px 15px;animation:fadeIn .2s ease;}
+  .section.visible{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+  .section-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:3px;color:var(--accent);margin-bottom:16px;border-left:4px solid var(--accent2);padding-left:10px;}
+
+  /* FIELDS */
+  .field-group{margin-bottom:14px;}
+  label{display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+  .field-row{display:flex;gap:8px;align-items:center;}
+  input[type=text],input[type=date],input[type=time],input[type=number],textarea,select{
+    width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);
+    color:var(--text);font-family:'Share Tech Mono',monospace;font-size:14px;padding:10px 13px;
+    outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none;}
+  input:focus,textarea:focus,select:focus{border-color:var(--accent);}
+  textarea{resize:vertical;min-height:68px;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+  /* MIC */
+  .mic-btn{flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--muted);font-size:17px;padding:9px 11px;cursor:pointer;transition:all .2s;line-height:1;}
+  .mic-btn.listening{background:var(--accent2);border-color:var(--accent2);color:#fff;animation:pulse .7s infinite alternate;}
+  @keyframes pulse{from{box-shadow:0 0 0 0 rgba(192,57,43,.5)}to{box-shadow:0 0 0 8px rgba(192,57,43,0)}}
+
+  /* RADIO */
+  .radio-group{display:flex;gap:8px;}
+  .radio-opt{flex:1;padding:9px 6px;text-align:center;font-size:12px;letter-spacing:1px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;background:var(--surface2);color:var(--muted);transition:all .15s;text-transform:uppercase;}
+  .radio-opt.selected{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600;}
+
+  /* CHECK */
+  .check-item{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 13px;margin-bottom:8px;cursor:pointer;transition:border-color .15s;}
+  .check-item input[type=checkbox]{display:none;}
+  .check-box{width:20px;height:20px;border:2px solid var(--muted);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:12px;}
+  .check-item.checked .check-box{background:var(--accent);border-color:var(--accent);color:#000;}
+  .check-label{font-size:13px;letter-spacing:.5px;flex:1;}
+  .check-detail{font-family:'Share Tech Mono',monospace;font-size:12px;width:90px;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--text);padding:4px 8px;outline:none;flex-shrink:0;}
+
+  /* DAMAGE */
+  .moto-diagram{position:relative;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;height:175px;}
+  .moto-svg{width:100%;height:100%;opacity:.28;user-select:none;pointer-events:none;}
+  .damage-canvas{position:absolute;top:0;left:0;width:100%;height:100%;cursor:crosshair;touch-action:none;}
+  .damage-tools{display:flex;gap:7px;margin-bottom:9px;flex-wrap:wrap;}
+  .dmg-tool{padding:6px 11px;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1px;border-radius:4px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;text-transform:uppercase;}
+  .dmg-tool.selected{background:var(--accent);color:#000;border-color:var(--accent);}
+  .dmg-clear{margin-left:auto;padding:6px 11px;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1px;border-radius:4px;border:1px solid var(--accent2);background:transparent;color:var(--accent2);cursor:pointer;text-transform:uppercase;}
+
+  /* FUEL */
+  .fuel-gauge{display:flex;flex-direction:column;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px;}
+  .fuel-label{font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:9px;text-transform:uppercase;}
+  .fuel-slider{width:100%;-webkit-appearance:none;background:linear-gradient(to right,var(--accent2),var(--accent));height:8px;border-radius:4px;outline:none;}
+  .fuel-slider::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid #000;}
+  .fuel-marks{display:flex;justify-content:space-between;width:100%;font-size:10px;color:var(--muted);margin-top:5px;font-family:'Share Tech Mono',monospace;}
+  .fuel-reading{margin-top:7px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--accent);}
+
+  /* SIG */
+  .sig-container{background:#fff;border-radius:var(--radius);border:2px solid var(--border);overflow:hidden;position:relative;}
+  .sig-canvas{display:block;width:100%;height:120px;touch-action:none;cursor:crosshair;}
+  .sig-placeholder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#bbb;font-size:12px;pointer-events:none;font-family:'Oswald',sans-serif;letter-spacing:2px;text-transform:uppercase;}
+  .sig-clear{width:100%;padding:7px;background:#f0f0f0;border:none;border-top:1px solid #ddd;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1.5px;color:#888;cursor:pointer;text-transform:uppercase;}
+
+  /* BUDGET */
+  .budget-row{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:0 13px;overflow:hidden;}
+  .currency{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--accent);padding-right:8px;}
+  .budget-row input{border:none;background:none;font-size:20px;flex:1;padding:10px 0;}
+
+  /* BUTTONS */
+  .btn-row{display:flex;gap:9px;margin-top:22px;}
+  .btn{flex:1;padding:13px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:3px;border-radius:var(--radius);border:none;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+  .btn-primary{background:var(--accent);color:#000;}
+  .btn-primary:active{background:#c9a83a;}
+  .btn-secondary{background:transparent;color:var(--muted);border:1px solid var(--border);}
+  .btn-danger{background:transparent;color:var(--accent2);border:1px solid var(--accent2);}
+
+  /* LEGAL */
+  .legal{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:18px;}
+
+  /* PREVIEW */
+  .preview-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:9px;}
+  .preview-title{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;color:var(--accent);margin-bottom:7px;}
+  .preview-row{display:flex;justify-content:space-between;font-size:11px;padding:4px 0;border-bottom:1px solid var(--border);color:var(--muted);}
+  .preview-row:last-child{border:none;}
+  .preview-val{color:var(--text);font-family:'Share Tech Mono',monospace;font-size:11px;text-align:right;max-width:60%;}
+
+  /* HISTORY */
+  .history-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:500;flex-direction:column;}
+  .history-overlay.open{display:flex;}
+  .hist-header{background:var(--surface);border-bottom:2px solid var(--accent);padding:15px 18px;display:flex;justify-content:space-between;align-items:center;}
+  .hist-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--accent);}
+  .hist-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;}
+  .hist-list{flex:1;overflow-y:auto;padding:14px;}
+  .hist-empty{text-align:center;color:var(--muted);font-size:13px;margin-top:60px;letter-spacing:2px;}
+  .hist-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:13px;margin-bottom:10px;cursor:pointer;transition:border-color .2s;}
+  .hist-card:active{border-color:var(--accent);}
+  .hist-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+  .hist-orden{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent);}
+  .hist-date{font-size:10px;color:var(--muted);}
+  .hist-cliente{font-size:14px;letter-spacing:.5px;margin-bottom:2px;}
+  .hist-moto{font-size:11px;color:var(--muted);}
+  .hist-actions{display:flex;gap:8px;margin-top:9px;}
+  .hist-btn{flex:1;padding:8px;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1.5px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;text-transform:uppercase;}
+  .hist-btn-del{border-color:var(--accent2);color:var(--accent2);}
+  .hist-btn-print{border-color:var(--accent);color:var(--accent);}
+
+  /* ORDER NUM */
+  .order-num{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent);background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:5px 10px;}
+  .divider{height:1px;background:var(--border);margin:16px 0;}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--accent);color:#000;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;padding:11px 22px;border-radius:30px;transition:transform .3s ease;z-index:999;white-space:nowrap;}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+
+  /* VOZ FALLBACK */
+  .voice-info{background:rgba(232,200,74,.07);border:1px solid rgba(232,200,74,.2);border-radius:var(--radius);padding:10px 13px;font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+  .voice-info strong{color:var(--accent);}
+
+  /* PRINT */
+  @media print{
+    body{background:#fff;color:#000;font-family:Arial,sans-serif;}
+    header,.steps-nav,.btn-row,.history-overlay,.toast,.voice-info{display:none!important;}
+    .section{display:block!important;padding:10px;}
+    .section-title{color:#003;border-color:#c00;}
+    input,textarea,select{border:1px solid #ccc;background:#fff;color:#000;}
+    .sig-canvas{border:1px solid #000;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="brand-top">Mora Motors</div>
+    <div class="brand-sub">Calavera Garage · Taller</div>
+  </div>
+  <div class="header-right">
+    <button class="btn-hist" onclick="abrirHistorial()">📋 Órdenes</button>
+    <span style="font-size:26px;">💀</span>
+  </div>
+</header>
+
+<nav class="steps-nav" id="stepsNav">
+  <button class="step-btn active" onclick="goTo(0)" id="s0">1·Cliente</button>
+  <button class="step-btn" onclick="goTo(1)" id="s1">2·Visual</button>
+  <button class="step-btn" onclick="goTo(2)" id="s2">3·Tablero</button>
+  <button class="step-btn" onclick="goTo(3)" id="s3">4·Accesorios</button>
+  <button class="step-btn" onclick="goTo(4)" id="s4">5·Diagnóstico</button>
+  <button class="step-btn" onclick="goTo(5)" id="s5">6·Firma</button>
+</nav>
+
+<!-- ═══ SECCIÓN 1: CLIENTE ═══ -->
+<section class="section visible" id="sec0">
+  <div class="section-title">Datos del Cliente & Vehículo</div>
+
+  <div id="voiceAlert" class="voice-info" style="display:none;">
+    ⚠️ <strong>Micrófono:</strong> Para usar la voz, abre esta app desde <strong>GitHub Pages, Netlify o Google Drive</strong> (requiere HTTPS). Desde archivo local el navegador bloquea el mic por seguridad.
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;">
+    <span class="order-num" id="ordenDisplay">Orden: —</span>
+    <button class="btn btn-secondary" style="flex:0;padding:7px 12px;font-size:11px;" onclick="generarOrden()">⟳ Generar #</button>
+  </div>
+
+  <div class="grid-2">
+    <div class="field-group"><label>Fecha</label><input type="date" id="fecha"></div>
+    <div class="field-group"><label>Hora</label><input type="time" id="hora"></div>
+  </div>
+
+  <div class="field-group"><label>Nombre del Cliente</label>
+    <div class="field-row"><input type="text" id="cliente" placeholder="Nombre completo"><button class="mic-btn" onclick="escuchar('cliente',this)">🎙</button></div>
+  </div>
+  <div class="field-group"><label>Teléfono</label>
+    <div class="field-row"><input type="text" id="telefono" placeholder="10 dígitos" inputmode="tel"><button class="mic-btn" onclick="escuchar('telefono',this)">🎙</button></div>
+  </div>
+  <div class="divider"></div>
+  <div class="grid-2">
+    <div class="field-group"><label>Marca</label>
+      <div class="field-row"><input type="text" id="marca" placeholder="Honda"><button class="mic-btn" onclick="escuchar('marca',this)">🎙</button></div>
+    </div>
+    <div class="field-group"><label>Modelo</label>
+      <div class="field-row"><input type="text" id="modelo" placeholder="CB 150"><button class="mic-btn" onclick="escuchar('modelo',this)">🎙</button></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="field-group"><label>Color</label><input type="text" id="color" placeholder="Rojo"></div>
+    <div class="field-group"><label>Año</label><input type="number" id="anio" placeholder="2022" inputmode="numeric"></div>
+  </div>
+  <div class="field-group"><label>Placa</label>
+    <div class="field-row"><input type="text" id="placa" placeholder="ABC-1234" style="text-transform:uppercase;"><button class="mic-btn" onclick="escuchar('placa',this)">🎙</button></div>
+  </div>
+  <div class="field-group"><label>NIV / Número de Serie ★</label>
+    <div class="field-row"><input type="text" id="niv" placeholder="Campo obligatorio" style="text-transform:uppercase;"><button class="mic-btn" onclick="escuchar('niv',this)">🎙</button></div>
+  </div>
+  <div class="field-group"><label>Estatus Legal REPUVE</label>
+    <div class="radio-group">
+      <div class="radio-opt selected" id="repuve_ok" onclick="setRadio('repuve','ok')">Sin Reporte</div>
+      <div class="radio-opt" id="repuve_rep" onclick="setRadio('repuve','rep')">Reportado</div>
+      <div class="radio-opt" id="repuve_pend" onclick="setRadio('repuve','pend')">Pendiente</div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-primary" onclick="goTo(1)">Siguiente →</button></div>
+</section>
+
+<!-- ═══ SECCIÓN 2: VISUAL ═══ -->
+<section class="section" id="sec1">
+  <div class="section-title">Inspección Visual</div>
+  <p style="font-size:11px;color:var(--muted);margin-bottom:11px;">Toca el diagrama para marcar daños. Elige el tipo primero.</p>
+
+  <div class="damage-tools">
+    <button class="dmg-tool selected" id="dt_r" onclick="setDmgTool('R')">R·Rayón</button>
+    <button class="dmg-tool" id="dt_g" onclick="setDmgTool('G')">G·Golpe</button>
+    <button class="dmg-tool" id="dt_f" onclick="setDmgTool('F')">F·Fuga</button>
+    <button class="dmg-tool" id="dt_p" onclick="setDmgTool('P')">P·Pieza</button>
+    <button class="dmg-clear" onclick="clearDamage()">✕</button>
+  </div>
+
+  <div class="moto-diagram" id="motoDiagram">
+    <svg class="moto-svg" viewBox="0 0 420 180" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#e8c84a" stroke-width="1.4">
+      <circle cx="80" cy="143" r="32"/><circle cx="80" cy="143" r="20"/>
+      <circle cx="340" cy="143" r="32"/><circle cx="340" cy="143" r="20"/>
+      <path d="M80 111 L128 62 L190 56 L250 63 L300 82 L340 111"/>
+      <line x1="128" y1="62" x2="122" y2="111"/>
+      <line x1="190" y1="56" x2="196" y2="111"/>
+      <path d="M196 56 Q230 45 272 57 L272 72 Q230 61 196 66 Z"/>
+      <ellipse cx="172" cy="63" rx="36" ry="14"/>
+      <line x1="128" y1="62" x2="110" y2="44"/>
+      <line x1="100" y1="44" x2="118" y2="44"/>
+      <line x1="113" y1="50" x2="94" y2="110"/>
+      <line x1="123" y1="50" x2="104" y2="110"/>
+      <rect x="140" y="82" width="62" height="38" rx="4"/>
+      <path d="M202 112 Q250 118 308 132 Q318 135 330 132"/>
+      <line x1="268" y1="63" x2="308" y2="111"/>
+      <line x1="278" y1="68" x2="313" y2="109"/>
+      <ellipse cx="92" cy="60" rx="13" ry="9"/>
+      <!-- rear wheel fender -->
+      <path d="M308 80 Q340 75 355 95"/>
+    </svg>
+    <canvas class="damage-canvas" id="damageCanvas"></canvas>
+  </div>
+
+  <div class="field-group"><label>Notas de daños</label>
+    <div class="field-row">
+      <textarea id="danoNota" placeholder="Daños que no se ven en el diagrama…"></textarea>
+      <button class="mic-btn" onclick="escuchar('danoNota',this)" style="align-self:flex-start;">🎙</button>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <label style="margin-bottom:8px;display:block;">Estado de Componentes</label>
+
+  <div id="checkEspejos" class="check-item" onclick="toggleCheck(this)">
+    <input type="checkbox"><div class="check-box">✓</div>
+    <span class="check-label">Espejos</span>
+    <select class="check-detail" id="estEspejos" onclick="event.stopPropagation()"><option>OK</option><option>Dañados</option></select>
+  </div>
+  <div id="checkManijas" class="check-item" onclick="toggleCheck(this)">
+    <input type="checkbox"><div class="check-box">✓</div>
+    <span class="check-label">Manijas</span>
+    <select class="check-detail" id="estManijas" onclick="event.stopPropagation()"><option>OK</option><option>Dobladas</option></select>
+  </div>
+  <div id="checkAsiento" class="check-item" onclick="toggleCheck(this)">
+    <input type="checkbox"><div class="check-box">✓</div>
+    <span class="check-label">Asiento</span>
+    <select class="check-detail" id="estAsiento" onclick="event.stopPropagation()"><option>OK</option><option>Roto</option></select>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(0)">← Atrás</button>
+    <button class="btn btn-primary" onclick="goTo(2)">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ═══ SECCIÓN 3: TABLERO ═══ -->
+<section class="section" id="sec2">
+  <div class="section-title">Tablero y Niveles</div>
+  <div class="field-group"><label>Kilometraje</label>
+    <div class="field-row"><input type="number" id="km" placeholder="00000 km" inputmode="numeric"><button class="mic-btn" onclick="escuchar('km',this)">🎙</button></div>
+  </div>
+  <div class="fuel-gauge">
+    <div class="fuel-label">⛽ Nivel de Gasolina</div>
+    <input type="range" class="fuel-slider" id="gasolinaSlider" min="0" max="100" value="50" oninput="updateFuel(this.value)">
+    <div class="fuel-marks"><span>E</span><span>¼</span><span>½</span><span>¾</span><span>F</span></div>
+    <div class="fuel-reading" id="fuelReading">½ Tanque</div>
+  </div>
+  <div class="field-group"><label>Tablero</label>
+    <div class="radio-group">
+      <div class="radio-opt selected" id="tab_si" onclick="setRadio('tablero','si')">Funciona</div>
+      <div class="radio-opt" id="tab_no" onclick="setRadio('tablero','no')">No Funciona</div>
+    </div>
+  </div>
+  <div class="field-group" id="tableroFallaGroup" style="display:none;"><label>Describe la falla</label>
+    <div class="field-row"><input type="text" id="tableroFalla" placeholder="Velocímetro no marca…"><button class="mic-btn" onclick="escuchar('tableroFalla',this)">🎙</button></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(1)">← Atrás</button>
+    <button class="btn btn-primary" onclick="goTo(3)">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ═══ SECCIÓN 4: ACCESORIOS ═══ -->
+<section class="section" id="sec3">
+  <div class="section-title">Inventario de Accesorios</div>
+  <div id="checkCasco" class="check-item" onclick="toggleCheck(this)">
+    <input type="checkbox"><div class="check-box">✓</div>
+    <span class="check-label">Casco</span>
+    <select class="check-detail" id="estCasco" onclick="event.stopPropagation()"><option>Sí</option><option>No</option></select>
+  </div>
+  <div id="checkCaslero" class="check-item" onclick="toggleCheck(this)">
+    <input type="checkbox"><div class="check-box">✓</div>
+    <span class="check-label">Caslero</span>
+    <select class="check-detail" id="estCaslero" onclick="event.stopPropagation()"><option>Funciona</option><option>No Funciona</option></select>
+  </div>
+  <div id="checkHerr" class="check-item" onclick="toggleCheck(this)">
+    <input type="checkbox"><div class="check-box">✓</div>
+    <span class="check-label">Herramientas</span>
+    <select class="check-detail" id="estHerr" onclick="event.stopPropagation()"><option>Sí</option><option>No</option></select>
+  </div>
+  <div class="field-group" style="margin-top:10px;"><label>Otros accesorios</label>
+    <div class="field-row">
+      <textarea id="otrosAcc" placeholder="Canastilla, candado, GPS…"></textarea>
+      <button class="mic-btn" onclick="escuchar('otrosAcc',this)" style="align-self:flex-start;">🎙</button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(2)">← Atrás</button>
+    <button class="btn btn-primary" onclick="goTo(4)">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ═══ SECCIÓN 5: DIAGNÓSTICO ═══ -->
+<section class="section" id="sec4">
+  <div class="section-title">Diagnóstico Inicial</div>
+  <div class="field-group"><label>Diagnóstico del Técnico</label>
+    <div class="field-row">
+      <textarea id="diagnostico" placeholder="Problema reportado por el cliente y evaluación inicial…" style="min-height:95px;"></textarea>
+      <button class="mic-btn" onclick="escuchar('diagnostico',this)" style="align-self:flex-start;">🎙</button>
+    </div>
+  </div>
+  <div class="field-group"><label>Presupuesto Estimado</label>
+    <div class="budget-row"><span class="currency">$</span><input type="number" id="presupuesto" placeholder="0.00" inputmode="decimal"></div>
+  </div>
+  <div class="field-group"><label>Promesa de Entrega</label><input type="date" id="entrega"></div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(3)">← Atrás</button>
+    <button class="btn btn-primary" onclick="goTo(5)">Firmar →</button>
+  </div>
+</section>
+
+<!-- ═══ SECCIÓN 6: FIRMA ═══ -->
+<section class="section" id="sec5">
+  <div class="section-title">Conformidad y Firmas</div>
+  <div class="legal">El cliente manifiesta bajo protesta de decir verdad que la unidad es de su propiedad o está autorizada, deslindando al taller de toda responsabilidad sobre su procedencia.</div>
+
+  <div class="field-group"><label>Nombre del Técnico (Taller)</label>
+    <div class="field-row"><input type="text" id="tecnico" placeholder="Nombre del mecánico"><button class="mic-btn" onclick="escuchar('tecnico',this)">🎙</button></div>
+  </div>
+
+  <div class="field-group"><label>Firma del Taller — Recibido</label>
+    <div class="sig-container">
+      <canvas class="sig-canvas" id="sigTaller"></canvas>
+      <div class="sig-placeholder" id="phTaller">Firma aquí</div>
+      <button class="sig-clear" onclick="clearSig('sigTaller','phTaller')">✕ Limpiar</button>
+    </div>
+  </div>
+
+  <div class="field-group" style="margin-top:14px;"><label>Firma del Cliente — Entregado</label>
+    <div class="sig-container">
+      <canvas class="sig-canvas" id="sigCliente"></canvas>
+      <div class="sig-placeholder" id="phCliente">Firma aquí</div>
+      <button class="sig-clear" onclick="clearSig('sigCliente','phCliente')">✕ Limpiar</button>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(4)">← Atrás</button>
+    <button class="btn btn-primary" onclick="verResumen()">Resumen 📋</button>
+  </div>
+</section>
+
+<!-- ═══ SECCIÓN 7: RESUMEN ═══ -->
+<section class="section" id="sec6">
+  <div class="section-title">Resumen de Orden</div>
+  <div id="resumenContent"></div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(5)">← Editar</button>
+    <button class="btn btn-primary" onclick="guardarOrden()">💾 Guardar</button>
+  </div>
+  <div class="btn-row" style="margin-top:8px;">
+    <button class="btn" style="background:transparent;border:1px solid var(--muted);color:var(--muted);font-size:12px;" onclick="window.print()">🖨 Imprimir / PDF</button>
+    <button class="btn btn-danger" onclick="nuevaOrden()">+ Nueva Orden</button>
+  </div>
+</section>
+
+<!-- ═══ HISTORIAL OVERLAY ═══ -->
+<div class="history-overlay" id="historialOverlay">
+  <div class="hist-header">
+    <span class="hist-title">💀 Órdenes Guardadas</span>
+    <button class="hist-close" onclick="cerrarHistorial()">✕</button>
+  </div>
+  <div class="hist-list" id="historialList"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let currentSection = 0;
+let damagePoints = [];
+let currentDmgTool = 'R';
+let radios = { repuve:'ok', tablero:'si' };
+const sigState = {};
+let ordenActual = null;
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function goTo(n) {
+  document.getElementById('sec'+currentSection).classList.remove('visible');
+  document.getElementById('s'+currentSection).classList.remove('active');
+  currentSection = n;
+  document.getElementById('sec'+n).classList.add('visible');
+  document.getElementById('s'+n).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (n===1) setTimeout(initCanvas,80);
+  if (n===5) setTimeout(()=>{initSig('sigTaller');initSig('sigCliente');},80);
+}
+
+// ══════════════════════════════════════════
+// ORDER NUMBER
+// ══════════════════════════════════════════
+function generarOrden() {
+  const d = new Date();
+  const num = 'MM-' + String(d.getFullYear()).slice(2)
+    + String(d.getMonth()+1).padStart(2,'0')
+    + String(d.getDate()).padStart(2,'0') + '-'
+    + String(Math.floor(Math.random()*900)+100);
+  ordenActual = num;
+  document.getElementById('ordenDisplay').textContent = 'Orden: '+num;
+  document.getElementById('ordenDisplay').dataset.value = num;
+  document.getElementById('fecha').value = d.toISOString().split('T')[0];
+  document.getElementById('hora').value = d.toTimeString().slice(0,5);
+}
+
+// ══════════════════════════════════════════
+// RADIO
+// ══════════════════════════════════════════
+function setRadio(group, val) {
+  radios[group] = val;
+  if (group==='repuve') {
+    ['ok','rep','pend'].forEach(v=>document.getElementById('repuve_'+v).classList.toggle('selected',v===val));
+  }
+  if (group==='tablero') {
+    ['si','no'].forEach(v=>document.getElementById('tab_'+v).classList.toggle('selected',v===val));
+    document.getElementById('tableroFallaGroup').style.display = val==='no'?'block':'none';
+  }
+}
+
+// ══════════════════════════════════════════
+// CHECKBOXES
+// ══════════════════════════════════════════
+function toggleCheck(el) { el.classList.toggle('checked'); }
+
+// ══════════════════════════════════════════
+// FUEL
+// ══════════════════════════════════════════
+function updateFuel(v) {
+  v = parseInt(v);
+  let lbl = v<=5?'Vacío (E)':v<=20?'1/4':v<=40?'1/4–1/2':v<=55?'1/2':v<=70?'1/2–3/4':v<=85?'3/4':v<100?'Casi Lleno':'Lleno (F)';
+  document.getElementById('fuelReading').textContent = lbl;
+}
+
+// ══════════════════════════════════════════
+// DAMAGE CANVAS
+// ══════════════════════════════════════════
+function initCanvas() {
+  const canvas = document.getElementById('damageCanvas');
+  const diagram = document.getElementById('motoDiagram');
+  if (!canvas||!diagram) return;
+  canvas.width = diagram.clientWidth;
+  canvas.height = diagram.clientHeight;
+  redrawDamage();
+  canvas.removeEventListener('pointerdown', onDmgDown);
+  canvas.addEventListener('pointerdown', onDmgDown);
+}
+function setDmgTool(t) {
+  currentDmgTool = t;
+  ['R','G','F','P'].forEach(x=>document.getElementById('dt_'+x.toLowerCase()).classList.toggle('selected',x===t));
+}
+function onDmgDown(e) {
+  e.preventDefault();
+  const c = document.getElementById('damageCanvas');
+  const r = c.getBoundingClientRect();
+  const x = (e.clientX-r.left)*(c.width/r.width);
+  const y = (e.clientY-r.top)*(c.height/r.height);
+  damagePoints.push({x,y,t:currentDmgTool});
+  redrawDamage();
+}
+function redrawDamage() {
+  const c = document.getElementById('damageCanvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const cols = {R:'#e8c84a',G:'#e74c3c',F:'#3498db',P:'#2ecc71'};
+  damagePoints.forEach(p=>{
+    ctx.fillStyle = cols[p.t]||'#fff';
+    ctx.beginPath(); ctx.arc(p.x,p.y,11,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#000'; ctx.font='bold 10px Oswald';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(p.t,p.x,p.y);
+  });
+}
+function clearDamage() {
+  damagePoints=[];
+  const c=document.getElementById('damageCanvas');
+  if(c) c.getContext('2d').clearRect(0,0,c.width,c.height);
+}
+
+// ══════════════════════════════════════════
+// SIGNATURE PADS
+// ══════════════════════════════════════════
+function initSig(id) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  canvas.width = canvas.offsetWidth;
+  canvas.height = 120;
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#111';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  sigState[id] = { drawing:false, hasData:false };
+
+  const phId = 'ph' + id.replace('sig','');
+
+  canvas.addEventListener('pointerdown', e=>{
+    e.preventDefault();
+    sigState[id].drawing=true;
+    const r=canvas.getBoundingClientRect();
+    ctx.beginPath();
+    ctx.moveTo((e.clientX-r.left)*(canvas.width/r.width),(e.clientY-r.top)*(canvas.height/r.height));
+    sigState[id].hasData=true;
+    const ph=document.getElementById(phId);
+    if(ph) ph.style.display='none';
+  });
+  canvas.addEventListener('pointermove', e=>{
+    if(!sigState[id].drawing) return;
+    e.preventDefault();
+    const r=canvas.getBoundingClientRect();
+    ctx.lineTo((e.clientX-r.left)*(canvas.width/r.width),(e.clientY-r.top)*(canvas.height/r.height));
+    ctx.stroke();
+  });
+  ['pointerup','pointerleave'].forEach(ev=>canvas.addEventListener(ev,()=>{sigState[id].drawing=false;}));
+}
+function clearSig(canvasId, phId) {
+  const c=document.getElementById(canvasId);
+  c.getContext('2d').clearRect(0,0,c.width,c.height);
+  if(sigState[canvasId]) sigState[canvasId].hasData=false;
+  const ph=document.getElementById(phId);
+  if(ph) ph.style.display='';
+}
+function getSigData(id) {
+  const c=document.getElementById(id);
+  if(!c||!sigState[id]||!sigState[id].hasData) return null;
+  return c.toDataURL('image/png');
+}
+
+// ══════════════════════════════════════════
+// VOICE INPUT
+// ══════════════════════════════════════════
+function escuchar(fieldId, btn) {
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec) {
+    // Fallback: prompt manual
+    const current = document.getElementById(fieldId).value;
+    const val = prompt('🎙 Escribe el texto para "' + fieldId + '":' , current);
+    if (val !== null) document.getElementById(fieldId).value = val;
+    return;
+  }
+  // Check if HTTPS (required for mic)
+  if (location.protocol === 'file:') {
+    document.getElementById('voiceAlert').style.display='block';
+    // Fallback al prompt
+    const current = document.getElementById(fieldId).value;
+    const val = prompt('🎙 Micrófono no disponible en archivo local.\nEscribe el texto manualmente:' , current);
+    if (val !== null) {
+      const f=document.getElementById(fieldId);
+      if(f.tagName==='TEXTAREA') f.value+=(f.value?' ':'')+val;
+      else f.value=val;
+    }
+    return;
+  }
+  const rec = new SpeechRec();
+  rec.lang='es-MX'; rec.interimResults=false; rec.maxAlternatives=1;
+  btn.classList.add('listening');
+  rec.start();
+  rec.onresult=e=>{
+    const t=e.results[0][0].transcript;
+    const f=document.getElementById(fieldId);
+    if(f.tagName==='TEXTAREA') f.value+=(f.value?' ':'')+t;
+    else f.value=t;
+    btn.classList.remove('listening');
+    showToast('✓ '+t);
+  };
+  rec.onerror=()=>{ btn.classList.remove('listening'); showToast('Error de micrófono'); };
+  rec.onend=()=>btn.classList.remove('listening');
+}
+
+// ══════════════════════════════════════════
+// COLLECT DATA
+// ══════════════════════════════════════════
+function collectData() {
+  return {
+    orden: document.getElementById('ordenDisplay').dataset.value || ordenActual || '—',
+    fecha: document.getElementById('fecha').value,
+    hora: document.getElementById('hora').value,
+    cliente: document.getElementById('cliente').value,
+    telefono: document.getElementById('telefono').value,
+    marca: document.getElementById('marca').value,
+    modelo: document.getElementById('modelo').value,
+    color: document.getElementById('color').value,
+    anio: document.getElementById('anio').value,
+    placa: document.getElementById('placa').value,
+    niv: document.getElementById('niv').value,
+    repuve: radios.repuve,
+    km: document.getElementById('km').value,
+    gasolina: document.getElementById('fuelReading').textContent,
+    gasolinaVal: document.getElementById('gasolinaSlider').value,
+    tablero: radios.tablero,
+    tableroFalla: document.getElementById('tableroFalla').value,
+    espejosCheck: document.getElementById('checkEspejos').classList.contains('checked'),
+    espejosEst: document.getElementById('estEspejos').value,
+    manijasCheck: document.getElementById('checkManijas').classList.contains('checked'),
+    manijasEst: document.getElementById('estManijas').value,
+    asientoCheck: document.getElementById('checkAsiento').classList.contains('checked'),
+    asientoEst: document.getElementById('estAsiento').value,
+    cascoCheck: document.getElementById('checkCasco').classList.contains('checked'),
+    cascoEst: document.getElementById('estCasco').value,
+    casleroCheck: document.getElementById('checkCaslero').classList.contains('checked'),
+    casleroEst: document.getElementById('estCaslero').value,
+    herrCheck: document.getElementById('checkHerr').classList.contains('checked'),
+    herrEst: document.getElementById('estHerr').value,
+    otrosAcc: document.getElementById('otrosAcc').value,
+    danoNota: document.getElementById('danoNota').value,
+    damagePoints: JSON.parse(JSON.stringify(damagePoints)),
+    diagnostico: document.getElementById('diagnostico').value,
+    presupuesto: document.getElementById('presupuesto').value,
+    entrega: document.getElementById('entrega').value,
+    tecnico: document.getElementById('tecnico').value,
+    sigTaller: getSigData('sigTaller'),
+    sigCliente: getSigData('sigCliente'),
+    savedAt: new Date().toISOString()
+  };
+}
+
+// ══════════════════════════════════════════
+// RESUMEN
+// ══════════════════════════════════════════
+function verResumen() {
+  goTo(6);
+  const d = collectData();
+  const repMap = {ok:'Sin Reporte',rep:'Reportado',pend:'Pendiente'};
+  const rows = [
+    ['# Orden', d.orden], ['Fecha', d.fecha||'—'], ['Hora', d.hora||'—'],
+    ['Cliente', d.cliente||'—'], ['Teléfono', d.telefono||'—'],
+    ['Marca / Modelo', `${d.marca||'—'} / ${d.modelo||'—'}`],
+    ['Color / Año', `${d.color||'—'} / ${d.anio||'—'}`],
+    ['Placa', d.placa||'—'], ['NIV/Serie', d.niv||'—'],
+    ['REPUVE', repMap[d.repuve]], ['Kilometraje', d.km?d.km+' km':'—'],
+    ['Gasolina', d.gasolina],
+    ['Tablero', d.tablero==='si'?'Funciona':'Falla: '+(d.tableroFalla||'—')],
+    ['Presupuesto', d.presupuesto?'$'+d.presupuesto:'—'],
+    ['Entrega', d.entrega||'—'],
+    ['Técnico', d.tecnico||'—'],
+    ['Diagnóstico', d.diagnostico||'—'],
+  ];
+
+  let html = '<div class="preview-card"><div class="preview-title">📋 Datos de la Orden</div>';
+  rows.forEach(([k,v])=>{
+    html+=`<div class="preview-row"><span>${k}</span><span class="preview-val">${v}</span></div>`;
+  });
+  html+='</div>';
+
+  // Componentes
+  const comps=[];
+  if(d.espejosCheck) comps.push(`Espejos: ${d.espejosEst}`);
+  if(d.manijasCheck) comps.push(`Manijas: ${d.manijasEst}`);
+  if(d.asientoCheck) comps.push(`Asiento: ${d.asientoEst}`);
+  if(d.cascoCheck) comps.push(`Casco: ${d.cascoEst}`);
+  if(d.casleroCheck) comps.push(`Caslero: ${d.casleroEst}`);
+  if(d.herrCheck) comps.push(`Herramientas: ${d.herrEst}`);
+  if(comps.length) {
+    html+='<div class="preview-card"><div class="preview-title">🔧 Componentes</div>';
+    comps.forEach(c=>html+=`<div class="preview-row"><span class="preview-val" style="max-width:100%">${c}</span></div>`);
+    html+='</div>';
+  }
+
+  // Daños
+  if(d.damagePoints.length) {
+    const leg={R:'Rayón',G:'Golpe',F:'Fuga',P:'Pieza faltante'};
+    const cnt={};
+    d.damagePoints.forEach(p=>cnt[p.t]=(cnt[p.t]||0)+1);
+    html+='<div class="preview-card"><div class="preview-title">⚠️ Daños Marcados</div>';
+    Object.entries(cnt).forEach(([t,c])=>html+=`<div class="preview-row"><span>${leg[t]||t}</span><span class="preview-val">${c} marca(s)</span></div>`);
+    html+='</div>';
+  }
+
+  // Firmas
+  html+='<div class="preview-card"><div class="preview-title">✍️ Firmas</div>';
+  html+=`<div class="preview-row"><span>Taller</span><span class="preview-val">${d.sigTaller?'✓ Firmado':'✗ Pendiente'}</span></div>`;
+  html+=`<div class="preview-row"><span>Cliente</span><span class="preview-val">${d.sigCliente?'✓ Firmado':'✗ Pendiente'}</span></div>`;
+  html+='</div>';
+
+  document.getElementById('resumenContent').innerHTML = html;
+}
+
+// ══════════════════════════════════════════
+// SAVE TO localStorage
+// ══════════════════════════════════════════
+function guardarOrden() {
+  const data = collectData();
+  if (!data.niv && !data.cliente) {
+    showToast('⚠️ Llena al menos cliente o NIV');
+    return;
+  }
+  let ordenes = JSON.parse(localStorage.getItem('moraMotors_ordenes')||'[]');
+  // Update if same orden number, else push
+  const idx = ordenes.findIndex(o=>o.orden===data.orden);
+  if (idx>=0) ordenes[idx]=data;
+  else ordenes.unshift(data); // newest first
+  localStorage.setItem('moraMotors_ordenes', JSON.stringify(ordenes));
+  showToast('💾 Orden '+data.orden+' guardada');
+}
+
+// ══════════════════════════════════════════
+// HISTORIAL
+// ══════════════════════════════════════════
+function abrirHistorial() {
+  renderHistorial();
+  document.getElementById('historialOverlay').classList.add('open');
+}
+function cerrarHistorial() {
+  document.getElementById('historialOverlay').classList.remove('open');
+}
+function renderHistorial() {
+  const ordenes = JSON.parse(localStorage.getItem('moraMotors_ordenes')||'[]');
+  const list = document.getElementById('historialList');
+  if (!ordenes.length) {
+    list.innerHTML='<div class="hist-empty">SIN ÓRDENES GUARDADAS</div>'; return;
+  }
+  list.innerHTML = ordenes.map((o,i)=>`
+    <div class="hist-card">
+      <div class="hist-card-top">
+        <span class="hist-orden">${o.orden}</span>
+        <span class="hist-date">${o.fecha||''} ${o.hora||''}</span>
+      </div>
+      <div class="hist-cliente">${o.cliente||'Sin nombre'}</div>
+      <div class="hist-moto">${o.marca||''} ${o.modelo||''} · ${o.placa||'Sin placa'}</div>
+      <div class="hist-actions">
+        <button class="hist-btn hist-btn-print" onclick="imprimirOrden(${i})">🖨 Imprimir</button>
+        <button class="hist-btn hist-btn-del" onclick="eliminarOrden(${i})">✕ Borrar</button>
+      </div>
+    </div>`).join('');
+}
+function eliminarOrden(idx) {
+  if (!confirm('¿Eliminar esta orden?')) return;
+  let ordenes = JSON.parse(localStorage.getItem('moraMotors_ordenes')||'[]');
+  ordenes.splice(idx,1);
+  localStorage.setItem('moraMotors_ordenes',JSON.stringify(ordenes));
+  renderHistorial();
+  showToast('Orden eliminada');
+}
+function imprimirOrden(idx) {
+  const ordenes = JSON.parse(localStorage.getItem('moraMotors_ordenes')||'[]');
+  const o = ordenes[idx];
+  if (!o) return;
+
+  const repMap = {ok:'Sin Reporte',rep:'Reportado',pend:'Pendiente'};
+  let w = window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head>
+    <meta charset="UTF-8">
+    <title>Orden ${o.orden} - Mora Motors</title>
+    <style>
+      body{font-family:Arial,sans-serif;font-size:12px;color:#000;padding:20px;}
+      h1{font-size:16px;text-align:center;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:12px;}
+      h2{font-size:12px;background:#003366;color:#fff;padding:4px 8px;margin:12px 0 6px;}
+      table{width:100%;border-collapse:collapse;margin-bottom:8px;}
+      td{border:1px solid #ccc;padding:5px 8px;vertical-align:top;}
+      td:first-child{font-weight:bold;width:38%;background:#f5f5f5;}
+      .sig-box{border:1px solid #000;height:80px;margin-top:4px;display:flex;align-items:center;justify-content:center;}
+      .sig-box img{max-height:75px;}
+      .sig-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px;}
+      .legal{font-size:10px;border:1px solid #ccc;padding:8px;margin:10px 0;background:#f9f9f9;}
+      @media print{button{display:none}}
+    </style>
+  </head><body>
+    <h1>RECEPCIÓN DE MOTOCICLETA TALLER — MORA MOTORS</h1>
+    <table>
+      <tr><td>Orden No.</td><td>${o.orden}</td></tr>
+      <tr><td>Fecha / Hora</td><td>${o.fecha||''} / ${o.hora||''}</td></tr>
+    </table>
+    <h2>1. DATOS DEL CLIENTE</h2>
+    <table>
+      <tr><td>Cliente</td><td>${o.cliente||'—'}</td></tr>
+      <tr><td>Teléfono</td><td>${o.telefono||'—'}</td></tr>
+    </table>
+    <h2>VEHÍCULO</h2>
+    <table>
+      <tr><td>Marca / Modelo</td><td>${o.marca||'—'} / ${o.modelo||'—'}</td></tr>
+      <tr><td>Color / Año</td><td>${o.color||'—'} / ${o.anio||'—'}</td></tr>
+      <tr><td>Placa</td><td>${o.placa||'—'}</td></tr>
+      <tr><td>NIV / Serie</td><td>${o.niv||'—'}</td></tr>
+      <tr><td>Estatus REPUVE</td><td>${repMap[o.repuve]||'—'}</td></tr>
+    </table>
+    <h2>2. INSPECCIÓN VISUAL</h2>
+    <table>
+      <tr><td>Espejos</td><td>${o.espejosCheck?o.espejosEst:'No revisado'}</td></tr>
+      <tr><td>Manijas</td><td>${o.manijasCheck?o.manijasEst:'No revisado'}</td></tr>
+      <tr><td>Asiento</td><td>${o.asientoCheck?o.asientoEst:'No revisado'}</td></tr>
+      <tr><td>Daños marcados</td><td>${o.damagePoints&&o.damagePoints.length?o.damagePoints.length+' punto(s)':'Sin daños marcados'}</td></tr>
+      <tr><td>Notas</td><td>${o.danoNota||'—'}</td></tr>
+    </table>
+    <h2>3. TABLERO Y NIVELES</h2>
+    <table>
+      <tr><td>Kilometraje</td><td>${o.km?o.km+' km':'—'}</td></tr>
+      <tr><td>Gasolina</td><td>${o.gasolina||'—'}</td></tr>
+      <tr><td>Tablero</td><td>${o.tablero==='si'?'Funciona':'No funciona — '+o.tableroFalla}</td></tr>
+    </table>
+    <h2>4. INVENTARIO DE ACCESORIOS</h2>
+    <table>
+      <tr><td>Casco</td><td>${o.cascoCheck?o.cascoEst:'No revisado'}</td></tr>
+      <tr><td>Caslero</td><td>${o.casleroCheck?o.casleroEst:'No revisado'}</td></tr>
+      <tr><td>Herramientas</td><td>${o.herrCheck?o.herrEst:'No revisado'}</td></tr>
+      <tr><td>Otros</td><td>${o.otrosAcc||'—'}</td></tr>
+    </table>
+    <h2>5. DIAGNÓSTICO INICIAL Y CONFORMIDAD</h2>
+    <table>
+      <tr><td>Diagnóstico</td><td>${o.diagnostico||'—'}</td></tr>
+      <tr><td>Presupuesto</td><td>${o.presupuesto?'$'+o.presupuesto:'—'}</td></tr>
+      <tr><td>Promesa de entrega</td><td>${o.entrega||'—'}</td></tr>
+    </table>
+    <div class="legal">*El cliente manifiesta bajo protesta de decir verdad que la unidad es de su propiedad o está autorizada, deslindando al taller de responsabilidad sobre su procedencia.*</div>
+    <div class="sig-row">
+      <div>
+        <strong>RECIBIDO (Taller) — ${o.tecnico||'________________'}</strong>
+        <div class="sig-box">${o.sigTaller?'<img src="'+o.sigTaller+'">':'Firma'}</div>
+        <div style="border-top:1px solid #000;margin-top:4px;font-size:10px;text-align:center;">Nombre y Firma</div>
+      </div>
+      <div>
+        <strong>ENTREGADO (Cliente) — ${o.cliente||'________________'}</strong>
+        <div class="sig-box">${o.sigCliente?'<img src="'+o.sigCliente+'">':'Firma'}</div>
+        <div style="border-top:1px solid #000;margin-top:4px;font-size:10px;text-align:center;">Nombre y Firma</div>
+      </div>
+    </div>
+    <br><button onclick="window.print()">🖨 Imprimir</button>
+  </body></html>`);
+  w.document.close();
+  cerrarHistorial();
+}
+
+// ══════════════════════════════════════════
+// NEW ORDER
+// ══════════════════════════════════════════
+function nuevaOrden() {
+  if (!confirm('¿Comenzar una nueva orden? Los datos actuales no guardados se perderán.')) return;
+  location.reload();
+}
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+generarOrden();
+// Check storage availability and show count
+try {
+  const ordenes = JSON.parse(localStorage.getItem('moraMotors_ordenes')||'[]');
+  if (ordenes.length>0) showToast('📋 '+ordenes.length+' orden(es) guardada(s)');
+} catch(e){}
+</script>
+</body>
+</html>
